@@ -1,0 +1,104 @@
+/********************************************************************************************
+
+Copyright 2018-2019 - Maven Silicon Softech Pvt Ltd. All Rights Reserved.
+
+This source code is an unpublished work belongs to Maven Silicon Softech Pvt Ltd.
+It is considered a trade secret and is not to be divulged or used by parties who 
+have not received written authorization from Maven Silicon Softech Pvt Ltd.
+
+Maven Silicon Softech Pvt Ltd
+Bangalore - 560076
+
+Webpage: www.maven-silicon.com
+
+Filename:	counter.v   
+
+Description:	This is a functional description of Alarm clock
+                counter unit .It generates the counting sequence for current time.
+
+Date:		01/05/2018
+
+Author:		Maven Silicon
+
+Email:		online@maven-silicon.com
+
+Version:	1.0
+
+*********************************************************************************************/
+
+module counter (clk,
+	        reset,
+		one_minute,
+		load_new_c,
+		new_current_time_ms_hr,
+		new_current_time_ms_min,
+		new_current_time_ls_hr,
+		new_current_time_ls_min,
+		current_time_ms_hr,
+		current_time_ms_min,
+		current_time_ls_hr,
+		current_time_ls_min);
+// Define input and output port directions
+input clk,reset,one_minute,load_new_c;
+input [3:0] new_current_time_ms_hr,new_current_time_ms_min,new_current_time_ls_hr,new_current_time_ls_min;
+output [3:0] current_time_ms_hr,current_time_ms_min,current_time_ls_hr,current_time_ls_min;
+reg [3:0] current_time_ms_hr,current_time_ms_min,current_time_ls_hr,current_time_ls_min;
+
+always@(posedge clk or posedge reset)
+begin
+if(reset)
+begin
+current_time_ms_hr<=4'd0;
+current_time_ms_min<=4'd0;
+current_time_ls_hr<=4'd0;
+current_time_ls_min<=4'd0;
+end
+
+else if(load_new_c)
+begin
+current_time_ms_hr<=new_current_time_ms_hr;
+current_time_ms_min<=new_current_time_ms_min;
+current_time_ls_hr<=new_current_time_ls_hr;
+current_time_ls_min<=new_current_time_ls_min;
+end
+
+else if(one_minute==1)
+begin
+if(current_time_ms_hr==4'd2 || current_time_ms_min ==4'd5 ||current_time_ls_hr ==4'd7||current_time_ls_min ==4'd9)
+begin
+current_time_ms_hr <=4'd0;
+current_time_ms_min <=4'd0;
+current_time_ls_hr <=4'd0;
+current_time_ls_min <=4'd0;
+end
+
+else if(current_time_ls_hr==4'd9 || current_time_ms_min ==4'd5 ||current_time_ls_min ==4'd9)
+begin
+current_time_ms_hr <=current_time_ms_hr+1'd1;
+current_time_ls_hr <=4'd0;
+current_time_ms_min <=4'd0;
+current_time_ls_min <=4'd0;
+end
+
+else if(current_time_ms_min==4'd5 || current_time_ls_min==4'd9)
+begin
+current_time_ls_hr<=current_time_ls_hr+1'd1;
+current_time_ms_min<=4'd0;
+current_time_ls_min<=4'd0;
+end
+
+else if(current_time_ls_min==4'd9)
+begin
+current_time_ms_min<=current_time_ms_min+1'd1;
+current_time_ls_min<=4'd0;
+end
+
+else
+begin
+current_time_ls_min<=current_time_ls_min+1'b1;
+end
+end
+end
+endmodule
+
+ 
